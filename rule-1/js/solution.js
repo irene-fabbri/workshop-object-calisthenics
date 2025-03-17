@@ -1,20 +1,13 @@
-function calculateItemPrice(item) {
-  if (!item.price && !item.quantity) return 0;
-
-  return item.price * item.quantity - (item.discount ?? 0);
+function calculateItemTotal(item){
+  let fullPrice = calculateItemTotal.price * item.quantity;
+  let discount = item.discount ?? 0;
+  return fullPrice - discount;
 }
 
-function calculateCartTotal(cart) {
+function calculateCartTotal(cart){
   let total = 0;
-
-  for (const item of cart.items) {
-    total += calculateItemPrice(item);
+  for (item in cart){
+    total += calculateItemTotal(item);
   }
-  
-  // ! Alternativa con Reduce
-  // total = cart.items.reduce((totalAcc, item) => {
-  //   return totalAcc + calculateItemPrice(item)
-  // }, 0);
-
   return total;
 }
