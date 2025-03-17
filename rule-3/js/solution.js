@@ -1,17 +1,34 @@
 class Age {
   constructor(value) {
-    // implementazione regole di cap sul value
-
+    if (!Number.isInteger(value)) throw new Error('Age must be an integer');
+    if (value < 0) throw new Error('Age cannot be negative');
+    if (value > 120) throw new Error('Age cannot be greater than 120');
+    
     this.value = value;
+    
+    Object.freeze(this);
+  }
+  
+  equals(other) {
+    if (!(other instanceof Age)) {
+      return false;
+    }
+    return this.value === other.value;
+  }
+
+  toString() {
+    return `${this.value} years old`;
   }
 }
 
 class Email {
   constructor(value) {
-    // implementazione regole di controllo
-    // sulla validità dell'email
+    // example_user01@my.beautiful.firm.com
+    const pattern = /^\w+@(?:[a-zA-Z0-9]+\.)+(?:\.[a-zA-Z]{2,})/;
+    if(! pattern.test(value)) throw new Error('Invalid Mail Syntax');
 
     this.value = value;
+    Object.freeze(this);
   }
 }
 
@@ -24,29 +41,30 @@ class Role {
     return "PREMIUM";
   }
 
-  static get allowedRoles() {
+  static get allowedRoles(){
     return [Role.BASIC, Role.PREMIUM];
   }
 
   constructor(value) {
-    // implementazione regole di controllo
-    // il value deve essere includo in Role.allowedRoles
+    if( !Role.allowedRoles.includes(value) ) throw new Error('Invalid Role');
 
     this.value = value;
   }
+
 }
 
 class User {
+
   canAccessFeature(feature) {
-    return this.isPremium() || (feature === Role.BASIC && this.isBasic(feature));
+    return this.isPremium() || (feature === Role.BASIC && this.isBasic());
   }
 
-  isBasic(feature) {
-    return this.roles.includes(Role.BASIC);
-  }
-
-  isPremium() {
+  isPremium(){
     return this.hasActiveSubscription && this.roles.includes(Role.PREMIUM);
+  }
+
+  isBasic(){
+    return this.roles.includes(Role.BASIC);
   }
 
   isAdult() {
@@ -63,4 +81,3 @@ class User {
     });
   }
 }
-
